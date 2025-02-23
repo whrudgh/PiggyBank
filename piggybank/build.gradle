@@ -1,0 +1,123 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.18'
+	id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'sesac.intruders'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	nettyVersion = '4.1.92.Final'
+}
+
+dependencies {
+	// Spring Boot Dependencies
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.security:spring-security-crypto'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+	testImplementation 'org.assertj:assertj-core:3.23.1'
+
+	// Hibernate Validator
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Property Encryption
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+
+	// Redis Dependencies
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.session:spring-session-data-redis'
+	implementation 'org.springframework.data:spring-data-redis'
+
+	// Redisson (버전 다운그레이드)
+	implementation 'org.redisson:redisson-spring-boot-starter:3.26.0'
+
+	// Netty 버전 고정
+	implementation "io.netty:netty-resolver-dns:${nettyVersion}"
+	implementation "io.netty:netty-resolver-dns-native-macos:${nettyVersion}"
+
+	// Redis Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.data:spring-data-redis'
+	testImplementation 'com.github.kstyrc:embedded-redis:0.6'
+
+	// JJWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON 파싱을 위한 Jackson 모듈
+
+	// Nurigo 문자 인증
+	implementation 'net.nurigo:sdk:4.3.0'
+
+	// Mail API
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	implementation 'com.sun.mail:javax.mail:1.6.2'
+
+	// SMTP
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
+
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14' // Swagger UI
+	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.14' // Core 라이브러리
+
+	implementation 'org.apache.tika:tika-core:2.8.0'
+	implementation 'org.apache.tika:tika-parsers:2.8.0'
+
+	// log4j
+	configurations {
+		all {
+			exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+		}
+	}
+	configurations {
+		all {
+			exclude group: 'ch.qos.logback', module: 'logback-classic'
+		}
+	}
+	implementation platform('org.apache.logging.log4j:log4j-bom:2.14.1')
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+	implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+	implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.1'
+	implementation 'org.apache.logging.log4j:log4j-web:2.14.1'
+
+	// json
+	implementation 'org.json:json:20231013'
+
+	// JSP 관련 의존성 추가
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	implementation 'javax.servlet:jstl:1.2'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

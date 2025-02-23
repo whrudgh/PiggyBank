@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG" monitorInterval="5">  <!-- 변경1: 모니터링 간격 추가 -->
+<Appenders>
+    <!-- 콘솔 Appender (변경 없음) -->
+    <Console name="Console" target="SYSTEM_OUT">
+        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+    </Console>
+
+    <!-- 동적 필터링이 적용된 RollingFile -->
+    <RollingFile name="RollingFile" fileName="logs/application.log"
+                 filePattern="logs/%d{yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+        <PatternLayout>
+            <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+        </PatternLayout>
+        <Policies>
+            <TimeBasedTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="250 MB" />
+        </Policies>
+        <Filters>
+            <!-- 변경2: 시스템 프로퍼티 기반 동적 필터링 -->
+            <ThresholdFilter level="${sys:logLevel:-info}" 
+                           onMatch="ACCEPT" 
+                           onMismatch="DENY"/>
+        </Filters>
+    </RollingFile>
+
+    <!-- 사용자 행동 로그에도 동일 적용 -->
+    <RollingFile name="UserActionsFile" fileName="logs/user-actions.log"
+                 filePattern="logs/%d{yyyy-MM}/user-actions-%d{MM-dd-yyyy}-%i.log.gz">
+        <PatternLayout>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %c{1.} [%t] %m%n</Pattern>
+        </PatternLayout>
+        <Policies>
+            <TimeBasedTriggeringPolicy />
+            <SizeBasedTriggeringPolicy size="250 MB" />
+        </Policies>
+        <Filters>
+            <ThresholdFilter level="${sys:logLevel:-info}" 
+                           onMatch="ACCEPT" 
+                           onMismatch="DENY"/>
+        </Filters>
+    </RollingFile>
+</Appenders>
+
+<Loggers>
+    <!-- 사용자 행동 로거 -->
+    <Logger name="UserActionsLogger" level="${sys:logLevel:-info}" additivity="false">
+        <AppenderRef ref="UserActionsFile" level="${sys:logLevel:-info}"/>
+    </Logger>
+
+    <!-- 기본 애플리케이션 로거 -->
+    <Root level="${sys:logLevel:-info}">  <!-- 변경3 -->
+        <AppenderRef ref="Console"/>
+        <AppenderRef ref="RollingFile"/>
+    </Root>
+</Loggers>
+</Configuration>
